@@ -52,7 +52,11 @@ export const useTasksStore = defineStore(
     }
 
     const setCurrentItem = () => {
-      currentTask.value = isBreak.value ? '休息時間' : items.value.shift().text
+      if (!isBreak.value && items.value.length > 0) {
+        currentTask.value = items.value[0].text // 只取得第一個事項的文字，不移除
+      } else {
+        currentTask.value = isBreak.value ? '休息時間' : ''
+      }
     }
 
     const countdown = () => {
@@ -60,17 +64,26 @@ export const useTasksStore = defineStore(
     }
 
     const setFinishedItem = () => {
-      if (!isBreak.value) {
+      if (!isBreak.value && currentTask.value) {
+        // 如果不是休息時間且有當前任務，將其加入完成清單
         finishedTasks.value.push({
           id: id++,
           text: currentTask.value,
         })
+        // 從待辦清單中移除已完成的事項
+        if (items.value.length > 0) {
+          items.value.shift()
+        }
       }
+
       // 清空當前任務
-      currentTask.value = '' // 切換休息狀態
+      currentTask.value = ''
+
+      // 切換休息狀態
       if (items.value.length > 0) {
         isBreak.value = !isBreak.value
       }
+
       // 重置時間
       timeleft.value = isBreak.value ? timeBreak : time
     }

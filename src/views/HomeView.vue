@@ -29,7 +29,7 @@
         <v-btn
           :disabled="tasks.currentTask.length === 0"
           icon="mdi-skip-next"
-          @click="finish"
+          @click="finish(true)"
         ></v-btn>
       </v-col>
     </v-row>
@@ -83,24 +83,28 @@ const pause = () => {
   status.value = STATUS.PAUSE
 }
 
-const finish = () => {
+const finish = (isSkip = false) => {
   // 停止計時器
   clearInterval(timer)
   // 狀態變成停止
   status.value = STATUS.STOP
-  // 播放鈴聲
-  const audio = new Audio()
-  audio.src = settings.selectedAlarm.file
-  audio.play()
 
-  const { show, isSupported } = useWebNotification({
-    title: '事項完成',
-    body: tasks.currentTask,
-    icon: new URL('@/assets/tomato.png', import.meta.url).href,
-  })
-  // 顯示通知
-  if (isSupported.value) {
-    show()
+  // 只有在不是跳過的情況下才播放鈴聲和顯示通知
+  if (!isSkip) {
+    // 播放鈴聲
+    const audio = new Audio()
+    audio.src = settings.selectedAlarm.file
+    audio.play()
+
+    const { show, isSupported } = useWebNotification({
+      title: '事項完成',
+      body: tasks.currentTask,
+      icon: new URL('@/assets/tomato.png', import.meta.url).href,
+    })
+    // 顯示通知
+    if (isSupported.value) {
+      show()
+    }
   }
 
   // 重置
