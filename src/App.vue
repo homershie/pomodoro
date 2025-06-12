@@ -1,0 +1,35 @@
+<template>
+  <v-app>
+    <v-app-bar>
+      <v-container class="d-flex align-center">
+        <v-app-bar-title>
+          <router-link to="/" class="text-decoration-none">
+            <img style="height: 32px" src="@/assets/tomato.png" alt="logo" /> </router-link
+        ></v-app-bar-title>
+        <v-btn prepend-icon="mdi-home" to="/">首頁</v-btn>
+        <v-btn prepend-icon="mdi-format-list-bulleted" to="/tasks">任務列表</v-btn>
+        <v-btn prepend-icon="mdi-cog" to="/settings">設定</v-btn>
+      </v-container>
+    </v-app-bar>
+    <v-main>
+      <router-view v-slot="{ Component }">
+        <!--
+        keep-alive 包住的項目不會被銷毀
+        include 屬性指定哪些組件需要被保留(快取)
+           https://zh-hk.vuejs.org/guide/built-ins/keep-alive.html#include-exclude
+          -->
+        <!--
+            component 動態元件
+            is 要使用的元件
+          -->
+        <keep-alive include="HomeView">
+          <component :is="Component" />
+        </keep-alive>
+      </router-view>
+    </v-main>
+  </v-app>
+</template>
+
+<script setup>
+//
+</script>
