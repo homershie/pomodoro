@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <h1 class="text-center">鈴聲設定</h1>
+        <h1 class="text-center text-secondary">鈴聲設定</h1>
       </v-col>
       <v-col cols="12">
         <v-table>

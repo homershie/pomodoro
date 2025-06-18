@@ -1,16 +1,18 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12">
-        <h1>目前事項</h1>
-        <h2>{{ tasks.currentTask }}</h2>
-        <h2>{{ tasks.timeleft }}</h2>
-        <h2>{{ timeLeftText }}</h2>
+      <v-col cols="12" class="text-center">
+        <h1 class="text-secondary">目前事項</h1>
+        <p class="text-h4">{{ tasks.currentTask }}</p>
       </v-col>
-      <v-col cols="12"
-        ><DigitNumber v-for="(data, i) in timeLeftText" :key="i" color="white" :data="data" />
+    </v-row>
+    <v-row class="my-10">
+      <v-col cols="12" class="text-center"
+        ><DigitNumber v-for="(data, i) in timeLeftText" :key="i" :color="digitColor" :data="data" />
       </v-col>
-      <v-col cols="12">
+    </v-row>
+    <v-row class="justify-center">
+      <v-col cols="1" class="text-center">
         <!--
         開始按鈕停用條件：
         1. 開始倒數中
@@ -22,14 +24,24 @@
           "
           icon="mdi-play"
           @click="startTimer"
+          class="bg-secondary"
         ></v-btn>
+      </v-col>
+      <v-col cols="1" class="text-center">
         <!-- 只有開始倒數中才能暫停 -->
-        <v-btn :disabled="status !== STATUS.START" icon="mdi-pause" @click="pause"></v-btn>
-        <!-- 目前有事項才能跳過 -->
+        <v-btn
+          :disabled="status !== STATUS.START"
+          icon="mdi-pause"
+          @click="pause"
+          class="bg-secondary"
+        ></v-btn>
+      </v-col>
+      <v-col cols="1" class="text-center">
         <v-btn
           :disabled="tasks.currentTask.length === 0"
           icon="mdi-skip-next"
           @click="finish(true)"
+          class="bg-secondary"
         ></v-btn>
       </v-col>
     </v-row>
@@ -42,7 +54,10 @@ import { computed, ref } from 'vue'
 import DigitNumber from '@/components/DigitNumber.vue'
 import { useTasksStore } from '@/stores/tasks.js'
 import { useSettingsStore } from '@/stores/settings'
+import { useTheme } from 'vuetify'
+const theme = useTheme()
 
+const digitColor = computed(() => theme.global.current.value.colors['on-background'] || '#fff')
 const tasks = useTasksStore()
 const settings = useSettingsStore()
 

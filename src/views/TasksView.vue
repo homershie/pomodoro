@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <h1 class="text-center">未完成</h1>
+        <h1 class="text-center text-secondary">未完成</h1>
       </v-col>
       <v-col cols="12">
         <v-text-field
@@ -54,7 +54,7 @@
         </v-table>
       </v-col>
       <v-col cols="12">
-        <h1 class="text-center">已完成</h1>
+        <h1 class="text-center text-secondary">已完成</h1>
       </v-col>
       <v-col cols="12">
         <v-table>

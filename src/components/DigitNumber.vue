@@ -100,11 +100,13 @@ svg {
 }
 rect,
 circle {
-  fill: rgba(255, 255, 255, 0.05);
+  fill: v-bind('color');
+  opacity: 0.05;
   &.active {
     // v-bind 把 CSS 值和 Vue 變數綁定
     // https://zh-hk.vuejs.org/api/sfc-css-features.html#v-bind-in-css
     fill: v-bind('color');
+    opacity: 1;
   }
 }
 </style>

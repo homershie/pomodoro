@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <v-app-bar>
-      <v-container class="d-flex align-center">
+    <v-app-bar class="bg-primary">
+      <v-container class="d-flex align-center" style="max-width: 1200px">
         <v-app-bar-title>
           <router-link to="/" class="text-decoration-none">
             <img style="height: 32px" src="@/assets/tomato.png" alt="logo" /> </router-link
@@ -9,6 +9,7 @@
         <v-btn prepend-icon="mdi-home" to="/">首頁</v-btn>
         <v-btn prepend-icon="mdi-format-list-bulleted" to="/tasks">任務列表</v-btn>
         <v-btn prepend-icon="mdi-cog" to="/settings">設定</v-btn>
+        <v-btn prepend-icon="mdi-theme-light-dark" @click="toggleTheme"></v-btn>
       </v-container>
     </v-app-bar>
     <v-main>
@@ -31,5 +32,9 @@
 </template>
 
 <script setup>
-//
+import { useTheme } from 'vuetify'
+const theme = useTheme()
+function toggleTheme() {
+  theme.global.name.value = theme.global.current.value.dark ? 'pomodoroTheme' : 'pomodoroDarkTheme'
+}
 </script>
