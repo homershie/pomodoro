@@ -124,6 +124,20 @@
         ></v-btn>
       </v-col>
     </v-row>
+    <v-row class="justify-center">
+      <v-col cols="12">
+        <v-progress-linear
+          :model-value="progressValue"
+          color="secondary"
+          height="10"
+          rounded
+          :style="{ transition: 'width 0.5s' }"
+        />
+        <div class="text-center mt-2" style="color: rgb(var(--v-theme-secondary), 0.8)">
+          {{ Math.round(progressValue) }}%
+        </div>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -246,6 +260,16 @@ const pendingTasks = computed(() => {
   }
   return tasks.items
 })
+
+// 進度條計算
+const progressValue = computed(() => {
+  // 判斷目前是工作還是休息
+  const total = tasks.isBreak ? timeBreak : time
+  // 避免除以0
+  if (!total) return 0
+  // 進度條為已過百分比
+  return ((total - tasks.timeleft) / total) * 100
+})
 </script>
 
 <style scoped lang="scss">
@@ -362,7 +386,7 @@ const pendingTasks = computed(() => {
     );
 
     .task-status {
-      color: rgb(var(--v-theme-secondary));
+      color: rgb(var(--v-theme-success));
     }
   }
 
