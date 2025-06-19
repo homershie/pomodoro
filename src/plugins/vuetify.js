@@ -60,7 +60,7 @@ const pomodoroDarkTheme = {
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 export default createVuetify({
   theme: {
-    defaultTheme: 'pomodoroTheme',
+    defaultTheme: 'pomodoroDarkTheme',
     themes: {
       pomodoroTheme,
       pomodoroDarkTheme,
