@@ -51,6 +51,17 @@ export const useTasksStore = defineStore(
       }
     }
 
+    const completeTask = (task) => {
+      const index = items.value.findIndex((t) => t.id === task.id)
+      if (index !== -1) {
+        finishedTasks.value.push({
+          id: task.id,
+          text: task.text,
+        })
+        items.value.splice(index, 1)
+      }
+    }
+
     const setCurrentItem = () => {
       if (!isBreak.value && items.value.length > 0) {
         currentTask.value = items.value[0].text // 只取得第一個事項的文字，不移除
@@ -94,6 +105,21 @@ export const useTasksStore = defineStore(
         finishedTasks.value.splice(i, 1)
       }
     }
+
+    const restoreTask = (id) => {
+      const i = finishedTasks.value.findIndex((item) => item.id === id)
+      if (i !== -1) {
+        const task = finishedTasks.value[i]
+        items.value.push({
+          id: id,
+          text: task.text,
+          edit: false,
+          model: task.text,
+        })
+        finishedTasks.value.splice(i, 1)
+      }
+    }
+
     return {
       items,
       finishedTasks,
@@ -104,10 +130,12 @@ export const useTasksStore = defineStore(
       submitEdit,
       cancelEdit,
       deleteTask,
+      completeTask,
       setCurrentItem,
       countdown,
       setFinishedItem,
       delFinishedItem,
+      restoreTask,
     }
   },
   {

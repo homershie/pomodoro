@@ -2,19 +2,36 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <h1 class="text-center text-secondary">未完成</h1>
+        <h1 class="text-secondary">未完成</h1>
       </v-col>
-      <v-col cols="12">
+    </v-row>
+    <v-row>
+      <v-col cols="11">
         <v-text-field
           v-model="input"
-          append-icon="mdi-plus"
+          prepend-inner-icon="mdi-plus"
           clearable
           label="新增事項"
           :rules="[rules.required, rules.length]"
-          @click:append="onAddFormSubmit"
           @keyup.enter="onAddFormSubmit"
           ref="inputField"
+          color="secondary"
+          variant="outlined"
+          validate-on-blur
         />
+      </v-col>
+      <v-col cols="1">
+        <v-btn
+          class="addBtn"
+          text="新增"
+          @click="onAddFormSubmit"
+          color="secondary"
+          variant="elevated"
+        />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
         <v-table>
           <thead>
             <tr>
@@ -45,6 +62,7 @@
                   <v-btn icon="mdi-undo" @click="onEditCancel(task)" />
                 </template>
                 <template v-else>
+                  <v-btn icon="mdi-check-circle" @click="tasks.completeTask(task)" />
                   <v-btn icon="mdi-pencil" @click="tasks.editTask(task)" />
                   <v-btn icon="mdi-delete" @click="tasks.deleteTask(task)" />
                 </template>
@@ -53,9 +71,13 @@
           </tbody>
         </v-table>
       </v-col>
+    </v-row>
+    <v-row>
       <v-col cols="12">
-        <h1 class="text-center text-secondary">已完成</h1>
+        <h1 class="text-secondary">已完成</h1>
       </v-col>
+    </v-row>
+    <v-row>
       <v-col cols="12">
         <v-table>
           <thead>
@@ -71,6 +93,7 @@
             <tr v-for="item in tasks.finishedTasks" :key="item.id">
               <td>{{ item.text }}</td>
               <td>
+                <v-btn icon="mdi-restore" @click="tasks.restoreTask(item.id)" />
                 <v-btn icon="mdi-delete" @click="tasks.delFinishedItem(item.id)" />
               </td>
             </tr>
@@ -119,3 +142,59 @@ const onEditCancel = (task) => {
   tasks.cancelEdit(task)
 }
 </script>
+
+<style scoped lang="scss">
+.v-text-field {
+  background-color: transparent;
+  --v-theme-surface: transparent !important;
+  --v-hover-opacity: 0 !important;
+}
+
+.v-table {
+  .v-btn {
+    box-shadow: none;
+    background-color: transparent;
+    filter: none;
+    transition: color 0.2s ease;
+    --v-theme-surface: transparent !important;
+    --v-hover-opacity: 0 !important;
+
+    &:hover {
+      color: #e74c3c;
+      background-color: transparent !important;
+      opacity: 1 !important;
+    }
+  }
+  tr {
+    th {
+      &:first-child {
+        width: 70%;
+      }
+      &:last-child {
+        width: 30%;
+        text-align: center;
+      }
+    }
+    td {
+      &:first-child {
+        width: 70%;
+      }
+      &:last-child {
+        width: 30%;
+        text-align: center;
+      }
+    }
+  }
+}
+
+.addBtn {
+  margin-top: 4px;
+  height: 48px;
+  width: 100%;
+  box-shadow: none;
+  transition: filter 0.2s ease;
+  &:hover {
+    filter: brightness(1.1);
+  }
+}
+</style>

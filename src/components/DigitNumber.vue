@@ -102,6 +102,7 @@ rect,
 circle {
   fill: v-bind('color');
   opacity: 0.05;
+  transition: all 0.3s ease;
   &.active {
     // v-bind 把 CSS 值和 Vue 變數綁定
     // https://zh-hk.vuejs.org/api/sfc-css-features.html#v-bind-in-css

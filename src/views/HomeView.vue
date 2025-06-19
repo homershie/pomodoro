@@ -139,3 +139,14 @@ const timeLeftText = computed(() => {
   return `${minutes}:${seconds}`
 })
 </script>
+
+<style scoped lang="scss">
+.v-btn {
+  box-shadow: none;
+  transition: filter 0.2s ease;
+  &:hover {
+    box-shadow: none;
+    filter: brightness(1.1);
+  }
+}
+</style>

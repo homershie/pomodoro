@@ -18,11 +18,19 @@ const pomodoroTheme = {
     surface: '#fff8f0',
     primary: '#e8c251', // 黃色
     secondary: '#e74c3c', // 番茄紅
-    accent: '#f1c40f', // 黃色
-    error: '#e57373',
+    accent: '#f1c40f',
+    error: '#e74c3c',
     info: '#3498db',
     success: '#2ecc71',
     warning: '#fbc02d',
+  },
+  variables: {
+    'font-family': 'Noto Sans TC, Roboto, sans-serif',
+    'font-size-root': '16px',
+    'font-weight-light': '300',
+    'font-weight-regular': '400',
+    'font-weight-medium': '500',
+    'font-weight-bold': '700',
   },
 }
 
@@ -31,13 +39,21 @@ const pomodoroDarkTheme = {
   colors: {
     background: '#1a1a1a',
     surface: '#232323',
-    primary: '#e8c251', // 深番茄紅
-    secondary: '#e74c3c',
+    primary: '#e8c251', // 黃色
+    secondary: '#e74c3c', // 番茄紅
     accent: '#ffd600',
-    error: '#ef9a9a',
+    error: '#e74c3c',
     info: '#90caf9',
     success: '#81c784',
     warning: '#ffe082',
+  },
+  variables: {
+    'font-family': 'Noto Sans TC, Roboto, sans-serif',
+    'font-size-root': '16px',
+    'font-weight-light': '300',
+    'font-weight-regular': '400',
+    'font-weight-medium': '500',
+    'font-weight-bold': '700',
   },
 }
 
@@ -48,6 +64,20 @@ export default createVuetify({
     themes: {
       pomodoroTheme,
       pomodoroDarkTheme,
+    },
+  },
+  defaults: {
+    VBtn: {
+      style: {
+        fontFamily: 'Noto Sans TC, Roboto, sans-serif',
+        fontSize: '1rem',
+        fontWeight: '700',
+      },
+    },
+    VAppBar: {
+      style: {
+        fontFamily: 'Noto Sans TC, Roboto, sans-serif',
+      },
     },
   },
 })
