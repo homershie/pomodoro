@@ -9,7 +9,7 @@ import { VitePluginRadar } from 'vite-plugin-radar'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/pomodoro/',
+  base: '/',
   plugins: [
     VitePluginRadar({
       // Google Analytics tag injection
@@ -64,19 +64,19 @@ export default defineConfig({
         short_name: 'MySite',
         icons: [
           {
-            src: './web-app-manifest-144x144.png',
+            src: '/web-app-manifest-144x144.png',
             sizes: '144x144',
             type: 'image/png',
             purpose: 'any',
           },
           {
-            src: './web-app-manifest-192x192.png',
+            src: '/web-app-manifest-192x192.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'maskable',
           },
           {
-            src: './web-app-manifest-512x512.png',
+            src: '/web-app-manifest-512x512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable',
@@ -86,9 +86,9 @@ export default defineConfig({
         background_color: '#e8c251',
         display: 'standalone',
         // 開始網址
-        start_url: './',
+        start_url: '/',
         // PWA 程式的作用域
-        scope: './',
+        scope: '/',
       },
     }),
   ],

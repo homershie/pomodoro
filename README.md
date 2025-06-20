@@ -1,3 +1,3 @@
 # pomodoro
 
-[link](https:/homershie.github.io/pomodoro/)
+[link](https://homershie.github.io/pomodoro/)
