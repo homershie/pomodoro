@@ -10,6 +10,13 @@ export const useSettingsStore = defineStore(
     ]
     const selected = ref(1)
 
+    // 音量設定 (0-1)
+    const volume = ref(1)
+
+    // 工作時間和休息時間設定 (分鐘)
+    const workMinutes = ref(25)
+    const breakMinutes = ref(5)
+
     const selectedAlarm = computed(() => {
       const i = alarms.findIndex((alarm) => alarm.id === selected.value)
       return alarms[i] || alarms[0]
@@ -19,12 +26,15 @@ export const useSettingsStore = defineStore(
       alarms,
       selected,
       selectedAlarm,
+      volume,
+      workMinutes,
+      breakMinutes,
     }
   },
   {
     persist: {
       key: 'pomodoro-settings',
-      pick: ['selected'],
+      pick: ['selected', 'volume', 'workMinutes', 'breakMinutes'],
     },
   }
 )

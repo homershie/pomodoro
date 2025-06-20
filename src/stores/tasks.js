@@ -1,8 +1,6 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
-
-const time = parseInt(import.meta.env.VITE_TIME)
-const timeBreak = parseInt(import.meta.env.VITE_TIME_BREAK)
+import { ref, computed } from 'vue'
+import { useSettingsStore } from './settings.js'
 
 export const useTasksStore = defineStore(
   'tasks',
@@ -12,8 +10,17 @@ export const useTasksStore = defineStore(
     const currentTask = ref('')
     let id = 1
 
-    const timeleft = ref(time)
     const isBreak = ref(false)
+
+    // 使用 settings store 的時間設定
+    const settings = useSettingsStore()
+
+    // 計算工作和休息時間（秒）
+    const workTime = computed(() => settings.workMinutes * 60)
+    const breakTime = computed(() => settings.breakMinutes * 60)
+
+    const timeleft = ref(workTime.value)
+
     const addTask = (text) => {
       items.value.push({
         id: id++,
@@ -96,7 +103,7 @@ export const useTasksStore = defineStore(
       }
 
       // 重置時間
-      timeleft.value = isBreak.value ? timeBreak : time
+      timeleft.value = isBreak.value ? breakTime.value : workTime.value
     }
 
     const delFinishedItem = (id) => {
@@ -125,6 +132,9 @@ export const useTasksStore = defineStore(
       finishedTasks,
       currentTask,
       timeleft,
+      isBreak,
+      workTime,
+      breakTime,
       addTask,
       editTask,
       submitEdit,

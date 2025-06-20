@@ -1,12 +1,12 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col cols="12">
+    <v-row class="justify-center">
+      <v-col xxl="8" xl="8" lg="10" md="10" sm="12" xs="12">
         <h1 class="text-secondary">未完成</h1>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="11">
+    <v-row class="justify-center">
+      <v-col xxl="7" xl="7" lg="9" md="9" sm="12" xs="12">
         <v-text-field
           v-model="input"
           prepend-inner-icon="mdi-plus"
@@ -30,8 +30,8 @@
         />
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="12">
+    <v-row class="justify-center">
+      <v-col xxl="8" xl="8" lg="10" md="10" sm="12" xs="12">
         <v-table>
           <thead>
             <tr>
@@ -72,13 +72,13 @@
         </v-table>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="12">
+    <v-row class="justify-center">
+      <v-col xxl="8" xl="8" lg="10" md="10" sm="12" xs="12">
         <h1 class="text-secondary">已完成</h1>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="12">
+    <v-row class="justify-center">
+      <v-col xxl="8" xl="8" lg="10" md="10" sm="12" xs="12">
         <v-table>
           <thead>
             <tr>

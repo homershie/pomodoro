@@ -34,9 +34,9 @@
                 <v-card-text>
                   <div class="task-status">待辦事項 #{{ index + (tasks.currentTask ? 2 : 1) }}</div>
                   <p class="text-h3 font-weight-bold task-title">{{ task.text }}</p>
-                  <p class="time-display">{{ formatTime(time) }}</p>
+                  <p class="time-display">{{ formatTime(tasks.workTime) }}</p>
                   <div class="text-medium-emphasis task-description">
-                    預計需要 {{ Math.ceil(time / 60) }} 分鐘完成<br />
+                    預計需要 {{ Math.ceil(tasks.workTime / 60) }} 分鐘完成<br />
                     準備好開始這個任務了嗎？
                   </div>
                 </v-card-text>
@@ -161,9 +161,7 @@ const settings = useSettingsStore()
 // Swiper modules
 const modules = [Pagination]
 
-// 取得環境變數中的時間設定
-const time = parseInt(import.meta.env.VITE_TIME) || 1500 // 預設 25 分鐘
-const timeBreak = parseInt(import.meta.env.VITE_TIME_BREAK) || 300 // 預設 5 分鐘
+// 使用 tasks store 中的時間設定（來自 settings store）
 
 // 格式化時間函數
 const formatTime = (seconds) => {
@@ -222,6 +220,7 @@ const finish = (isSkip = false) => {
     // 播放鈴聲
     const audio = new Audio()
     audio.src = settings.selectedAlarm.file
+    audio.volume = settings.volume || 1
     audio.play()
 
     const { show, isSupported } = useWebNotification({
@@ -264,7 +263,7 @@ const pendingTasks = computed(() => {
 // 進度條計算
 const progressValue = computed(() => {
   // 判斷目前是工作還是休息
-  const total = tasks.isBreak ? timeBreak : time
+  const total = tasks.isBreak ? tasks.breakTime : tasks.workTime
   // 避免除以0
   if (!total) return 0
   // 進度條為已過百分比
@@ -313,7 +312,7 @@ const progressValue = computed(() => {
 }
 
 .task-card {
-  height: 240px;
+  height: 300px;
   transition: all 0.3s ease;
   border-radius: 16px;
 
@@ -419,7 +418,7 @@ const progressValue = computed(() => {
 
   .task-card {
     max-width: 300px !important;
-    height: 220px;
+    height: 260px;
 
     .task-title {
       font-size: 1.25rem !important;
