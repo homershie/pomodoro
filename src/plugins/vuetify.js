@@ -15,7 +15,7 @@ const pomodoroTheme = {
   dark: false,
   colors: {
     background: '#fff8f0',
-    surface: '#fff8f0',
+    surface: '#fff1e9',
     primary: '#e8c251', // 黃色
     secondary: '#e74c3c', // 番茄紅
     accent: '#f1c40f',

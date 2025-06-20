@@ -125,7 +125,7 @@
       </v-col>
     </v-row>
     <v-row class="justify-center">
-      <v-col cols="12">
+      <v-col xxl="8" xl="8" lg="10" md="10" sm="12" xs="12">
         <v-progress-linear
           :model-value="progressValue"
           color="secondary"

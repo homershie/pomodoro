@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar class="bg-primary">
+    <v-app-bar class="bg-primary" elevation="0">
       <v-container class="d-flex align-center" style="max-width: 1200px">
         <v-app-bar-title>
           <router-link to="/" class="text-decoration-none">
