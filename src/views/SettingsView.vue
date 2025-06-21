@@ -48,6 +48,7 @@
         </v-table>
       </v-col>
     </v-row>
+
     <!-- 時間設定區塊 -->
     <v-row class="justify-center">
       <v-col xxl="8" xl="8" lg="10" md="10" sm="12" xs="12">
@@ -86,6 +87,35 @@
               />
             </td></tr
         ></v-table>
+      </v-col>
+    </v-row>
+
+    <!-- 通知設定區塊 -->
+    <v-row class="justify-center">
+      <v-col xxl="8" xl="8" lg="10" md="10" sm="12" xs="12">
+        <h1 class="text-secondary">通知設定</h1>
+      </v-col>
+    </v-row>
+
+    <v-row class="justify-center">
+      <v-col xxl="8" xl="8" lg="10" md="10" sm="12" xs="12">
+        <v-table>
+          <tr>
+            <td class="pa-5">
+              <v-switch
+                v-model="settings.notifications"
+                label="啟用桌面通知"
+                color="primary"
+                :prepend-icon="settings.notifications ? 'mdi-bell' : 'mdi-bell-off'"
+                inset
+                hide-details
+              />
+              <div class="text-caption text-medium-emphasis mt-2">
+                當番茄鐘結束時顯示 Windows 桌面通知
+              </div>
+            </td>
+          </tr>
+        </v-table>
       </v-col>
     </v-row>
   </v-container>

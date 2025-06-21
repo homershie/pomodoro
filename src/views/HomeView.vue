@@ -223,14 +223,17 @@ const finish = (isSkip = false) => {
     audio.volume = settings.volume || 1
     audio.play()
 
-    const { show, isSupported } = useWebNotification({
-      title: '事項完成',
-      body: tasks.currentTask,
-      icon: new URL('@/assets/tomato.png', import.meta.url).href,
-    })
-    // 顯示通知
-    if (isSupported.value) {
-      show()
+    // 只有在設定啟用通知時才顯示通知
+    if (settings.notifications) {
+      const { show, isSupported } = useWebNotification({
+        title: '事項完成',
+        body: tasks.currentTask,
+        icon: new URL('@/assets/tomato.png', import.meta.url).href,
+      })
+      // 顯示通知
+      if (isSupported.value) {
+        show()
+      }
     }
   }
 
@@ -391,7 +394,6 @@ const progressValue = computed(() => {
 
   &.empty-state {
     border: 2px dashed rgba(var(--v-theme-secondary), 0.3);
-    background: rgba(var(--v-theme-surface-variant), 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
