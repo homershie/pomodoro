@@ -105,38 +105,48 @@ const playExplosionAnimation = async () => {
   // 階段1：輕微放大並向上移動同時淡出
   tl.to(changedDigits, {
     scale: 2,
-    opacity: 0.1,
-    rotation: () => gsap.utils.random(-5, 5),
-    duration: 0.25,
-    ease: 'power1.out',
+    opacity: 0,
+    textShadow: () => {
+      const dx = Math.floor(Math.random() * 10) - 2
+      const dy = Math.floor(Math.random() * 10) - 2
+      return `${dx}px ${dy}px red, ${-dx}px ${-dy}px cyan, ${dy}px ${dx}px lime`
+    },
+    duration: 0.4,
+    ease: 'power2.out',
     stagger: {
       amount: 0.08,
       from: 'center',
     },
   })
 
-    // 階段2：完全消失並重置到新位置
-    .to(changedDigits, {
-      opacity: 0,
-      scale: 1,
-      duration: 0.15,
-      ease: 'power1.in',
-    })
+  tl.to(changedDigits, {
+    scale: 2.4,
+    opacity: 0,
+    textShadow: () => {
+      const dx = Math.floor(Math.random() * 10) - 2
+      const dy = Math.floor(Math.random() * 10) - 2
+      return `${dx}px ${dy}px red, ${-dx}px ${-dy}px cyan, ${dy}px ${dx}px lime`
+    },
+    duration: 0.2,
+    ease: 'power2.out',
+    stagger: {
+      amount: 0.08,
+      from: 'center',
+    },
+  })
 
-    // 階段3：立即重置到下方準備位置
-    .set(changedDigits, {
-      scale: 0.6,
-      rotation: 0,
-      opacity: 0,
-    })
-
-    // 階段4：彈性出現新數字
+    // 階段3：彈性出現新數字
     .to(
       changedDigits,
       {
         scale: 1,
         opacity: 1,
-        duration: 0.5,
+        duration: 0.4,
+        textShadow: () => {
+          const dx = 0
+          const dy = 0
+          return `none`
+        },
         ease: 'back.out(1.5)',
         stagger: {
           amount: 0.12,
@@ -290,7 +300,7 @@ onUnmounted(() => {
     background: linear-gradient(
       135deg,
       rgb(var(--v-theme-secondary)),
-      rgba(var(--v-theme-secondary), 0.7)
+      rgba(var(--v-theme-secondary), 1)
     );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

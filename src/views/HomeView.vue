@@ -222,8 +222,8 @@ const finish = (isSkip = false) => {
     audio.volume = settings.volume || 1
     audio.play()
 
-    // 只有在設定啟用通知時才顯示通知
-    if (settings.notifications) {
+    // 只有在設定啟用通知且不是休息時間時才顯示通知
+    if (settings.notifications && !tasks.isBreak) {
       const { show, isSupported } = useWebNotification({
         title: '事項完成',
         body: tasks.currentTask,
