@@ -86,8 +86,8 @@
       </v-col>
     </v-row>
     <v-row class="my-5">
-      <v-col cols="12" class="text-center"
-        ><DigitNumber v-for="(data, i) in timeLeftText" :key="i" :color="digitColor" :data="data" />
+      <v-col cols="12" class="text-center">
+        <MaskNumber :time="timeLeftText" />
       </v-col>
     </v-row>
     <v-row class="justify-center">
@@ -148,13 +148,12 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Pagination } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/pagination'
-import DigitNumber from '@/components/DigitNumber.vue'
 import { useTasksStore } from '@/stores/tasks.js'
 import { useSettingsStore } from '@/stores/settings'
 import { useTheme } from 'vuetify'
+import MaskNumber from '@/components/ParticleNumber.vue'
 
 const theme = useTheme()
-const digitColor = computed(() => theme.global.current.value.colors['on-background'] || '#fff')
 const tasks = useTasksStore()
 const settings = useSettingsStore()
 
