@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useSettingsStore } from './settings.js'
 
 export const useTasksStore = defineStore(
@@ -8,7 +8,7 @@ export const useTasksStore = defineStore(
     const items = ref([])
     const finishedTasks = ref([])
     const currentTask = ref('')
-    let id = 1
+    const nextId = ref(1)
 
     const isBreak = ref(false)
 
@@ -21,13 +21,70 @@ export const useTasksStore = defineStore(
 
     const timeleft = ref(workTime.value)
 
+    // 清理重複ID並重新分配
+    const cleanupDuplicateIds = () => {
+      const allTasks = [...items.value, ...finishedTasks.value]
+      const seenIds = new Set()
+      const duplicateIds = new Set()
+
+      // 找出重複的ID
+      allTasks.forEach((task) => {
+        if (seenIds.has(task.id)) {
+          duplicateIds.add(task.id)
+        } else {
+          seenIds.add(task.id)
+        }
+      })
+
+      if (duplicateIds.size > 0) {
+        console.warn('發現重複ID:', Array.from(duplicateIds))
+
+        // 重新分配ID給所有任務
+        let newId = 1
+        items.value.forEach((task) => {
+          task.id = newId++
+        })
+        finishedTasks.value.forEach((task) => {
+          task.id = newId++
+        })
+
+        nextId.value = newId
+        console.log('已重新分配所有ID')
+      }
+    }
+
+    // 生成唯一 ID
+    const getNextId = () => {
+      return nextId.value++
+    }
+
+    // 初始化 ID 系統
+    const initializeIds = () => {
+      // 先清理重複ID
+      cleanupDuplicateIds()
+
+      // 確保 nextId 是最大值 + 1
+      const allIds = [
+        ...items.value.map((item) => item.id),
+        ...finishedTasks.value.map((item) => item.id),
+      ]
+
+      if (allIds.length > 0) {
+        nextId.value = Math.max(...allIds) + 1
+      }
+
+      console.log('ID系統初始化完成，nextId:', nextId.value)
+    }
+
     const addTask = (text) => {
-      items.value.push({
-        id: id++,
+      const newTask = {
+        id: getNextId(),
         text,
         edit: false,
         model: text,
-      })
+      }
+      items.value.push(newTask)
+      console.log('添加任務 ID:', newTask.id)
     }
 
     const editTask = (task) => {
@@ -71,7 +128,7 @@ export const useTasksStore = defineStore(
 
     const setCurrentItem = () => {
       if (!isBreak.value && items.value.length > 0) {
-        currentTask.value = items.value[0].text // 只取得第一個事項的文字，不移除
+        currentTask.value = items.value[0].text
       } else {
         currentTask.value = isBreak.value ? '休息時間' : ''
       }
@@ -83,26 +140,21 @@ export const useTasksStore = defineStore(
 
     const setFinishedItem = () => {
       if (!isBreak.value && currentTask.value) {
-        // 如果不是休息時間且有當前任務，將其加入完成清單
         finishedTasks.value.push({
-          id: id++,
+          id: getNextId(),
           text: currentTask.value,
         })
-        // 從待辦清單中移除已完成的事項
         if (items.value.length > 0) {
           items.value.shift()
         }
       }
 
-      // 清空當前任務
       currentTask.value = ''
 
-      // 切換休息狀態
       if (items.value.length > 0) {
         isBreak.value = !isBreak.value
       }
 
-      // 重置時間
       timeleft.value = isBreak.value ? breakTime.value : workTime.value
     }
 
@@ -118,7 +170,7 @@ export const useTasksStore = defineStore(
       if (i !== -1) {
         const task = finishedTasks.value[i]
         items.value.push({
-          id: id,
+          id: getNextId(),
           text: task.text,
           edit: false,
           model: task.text,
@@ -126,6 +178,35 @@ export const useTasksStore = defineStore(
         finishedTasks.value.splice(i, 1)
       }
     }
+
+    // 重置所有數據
+    const resetAllData = () => {
+      items.value = []
+      finishedTasks.value = []
+      currentTask.value = ''
+      nextId.value = 1
+      console.log('已重置所有數據')
+    }
+
+    // 在 store 初始化時調用
+    initializeIds()
+
+    // 監控數據變化，確保沒有重複ID
+    watch(
+      [items, finishedTasks],
+      () => {
+        const allIds = [
+          ...items.value.map((item) => item.id),
+          ...finishedTasks.value.map((item) => item.id),
+        ]
+        const uniqueIds = new Set(allIds)
+        if (allIds.length !== uniqueIds.size) {
+          console.error('檢測到重複ID，正在修復...')
+          cleanupDuplicateIds()
+        }
+      },
+      { deep: true }
+    )
 
     return {
       items,
@@ -135,6 +216,7 @@ export const useTasksStore = defineStore(
       isBreak,
       workTime,
       breakTime,
+      nextId,
       addTask,
       editTask,
       submitEdit,
@@ -146,6 +228,9 @@ export const useTasksStore = defineStore(
       setFinishedItem,
       delFinishedItem,
       restoreTask,
+      initializeIds,
+      resetAllData,
+      cleanupDuplicateIds,
     }
   },
   {
