@@ -2,7 +2,7 @@
   <v-container>
     <v-row class="justify-center">
       <v-col xxl="8" xl="8" lg="10" md="10" sm="12" xs="12">
-        <h1 class="text-secondary">未完成事項</h1>
+        <h1 class="text-secondary">未完成任務</h1>
       </v-col>
     </v-row>
     <v-row class="justify-center">
@@ -11,7 +11,7 @@
           v-model="input"
           prepend-inner-icon="mdi-plus"
           clearable
-          label="新增事項"
+          label="新增任務"
           :rules="[rules.required, rules.length]"
           @keyup.enter="onAddFormSubmit"
           ref="inputField"
@@ -82,7 +82,7 @@
         <v-card v-if="tasks.items.length === 0" class="text-center pa-4" variant="outlined">
           <v-card-text>
             <v-icon size="48" color="secondary" class="mb-2">mdi-clipboard-text-outline</v-icon>
-            <div class="text-h6">沒有待辦事項</div>
+            <div class="text-h6">沒有待辦任務</div>
             <div class="text-caption text-medium-emphasis">新增一個任務開始您的番茄鐘！</div>
           </v-card-text>
         </v-card>
@@ -90,7 +90,7 @@
     </v-row>
     <v-row class="justify-center">
       <v-col xxl="8" xl="8" lg="10" md="10" sm="12" xs="12">
-        <h1 class="text-success">已完成事項</h1>
+        <h1 class="text-success">已完成任務</h1>
       </v-col>
     </v-row>
     <v-row class="justify-center">
@@ -130,7 +130,7 @@
         <v-card v-if="tasks.finishedTasks.length === 0" class="text-center pa-4" variant="outlined">
           <v-card-text>
             <v-icon size="48" color="success" class="mb-2">mdi-trophy-outline</v-icon>
-            <div class="text-h6">還沒有完成的事項</div>
+            <div class="text-h6">還沒有完成的任務</div>
             <div class="text-caption text-medium-emphasis">完成任務後會顯示在這裡</div>
           </v-card-text>
         </v-card>

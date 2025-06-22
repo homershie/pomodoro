@@ -308,6 +308,8 @@ onUnmounted(() => {
     text-shadow: 2px 2px 4px rgba(var(--v-theme-secondary), 0.3);
     transform-origin: center;
     line-height: 1;
+    user-select: none;
+    -webkit-user-drag: none;
 
     // 冒號特殊樣式
     &.colon {

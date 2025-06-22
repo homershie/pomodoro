@@ -17,7 +17,7 @@
             <swiper-slide v-if="tasks.currentTask">
               <v-card class="mx-auto task-card current-task" max-width="344">
                 <v-card-text>
-                  <div class="task-status">目前事項</div>
+                  <div class="task-status">目前任務</div>
                   <p class="text-h3 font-weight-black task-title">{{ tasks.currentTask }}</p>
                   <p class="time-display">{{ timeLeftText }}</p>
                   <div class="text-medium-emphasis task-description">
@@ -32,7 +32,7 @@
             <swiper-slide v-for="(task, index) in pendingTasks" :key="task.id">
               <v-card class="mx-auto task-card pending-task" max-width="344">
                 <v-card-text>
-                  <div class="task-status">待辦事項 #{{ index + (tasks.currentTask ? 2 : 1) }}</div>
+                  <div class="task-status">待辦任務 #{{ index + (tasks.currentTask ? 2 : 1) }}</div>
                   <p class="text-h3 font-weight-bold task-title">{{ task.text }}</p>
                   <p class="time-display">{{ formatTime(tasks.workTime) }}</p>
                   <div class="text-medium-emphasis task-description">
@@ -95,7 +95,7 @@
         <!--
         開始按鈕停用條件：
         1. 開始倒數中
-        2. 目前沒有任何事項且沒有未完成事項
+        2. 目前沒有任何任務且沒有未完成任務
          -->
         <v-btn
           :disabled="
@@ -184,7 +184,7 @@ let timer = 0
 // 開始計時器
 // 暫停繼續 + 停止開始
 const startTimer = () => {
-  // 如果是停止開始，更新目前事項
+  // 如果是停止開始，更新目前任務
   if (status.value === STATUS.STOP && tasks.items.length > 0) {
     tasks.setCurrentItem()
   }
@@ -193,7 +193,7 @@ const startTimer = () => {
   status.value = STATUS.START
   // 開始倒數
   timer = setInterval(() => {
-    // 每秒更新目前事項的時間
+    // 每秒更新目前任務的時間
     tasks.countdown()
 
     if (tasks.timeleft < 0) {
@@ -243,7 +243,7 @@ const finish = () => {
   tasks.setFinishedItem()
 
   if (tasks.items.length > 0) {
-    // 開始下一個事項
+    // 開始下一個任務
     startTimer()
   }
 }
