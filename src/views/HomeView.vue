@@ -117,9 +117,9 @@
       </v-col>
       <v-col cols="1" class="text-center">
         <v-btn
-          :disabled="tasks.currentTask.length === 0"
+          :disabled="tasks.currentTask.length === 0 && !tasks.isBreak"
           icon="mdi-skip-next"
-          @click="finish(true)"
+          @click="skipToNext"
           class="bg-secondary"
         ></v-btn>
       </v-col>
@@ -143,7 +143,7 @@
 
 <script setup>
 import { useWebNotification } from '@vueuse/core'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Pagination } from 'swiper/modules'
 import 'swiper/css'
@@ -208,31 +208,34 @@ const pause = () => {
   status.value = STATUS.PAUSE
 }
 
-const finish = (isSkip = false) => {
+const finish = () => {
   // 停止計時器
   clearInterval(timer)
   // 狀態變成停止
   status.value = STATUS.STOP
 
-  // 只有在不是跳過的情況下才播放鈴聲和顯示通知
-  if (!isSkip) {
-    // 播放鈴聲
-    const audio = new Audio()
-    audio.src = settings.selectedAlarm.file
-    audio.volume = settings.volume || 1
-    audio.play()
+  // 記錄完成前的狀態，用於決定通知類型
+  const wasBreak = tasks.isBreak
+  const currentTaskName = tasks.currentTask
 
-    // 只有在設定啟用通知且不是休息時間時才顯示通知
-    if (settings.notifications && !tasks.isBreak) {
-      const { show, isSupported } = useWebNotification({
-        title: '事項完成',
-        body: tasks.currentTask,
-        icon: new URL('@/assets/tomato.png', import.meta.url).href,
-      })
-      // 顯示通知
-      if (isSupported.value) {
-        show()
-      }
+  // 只有在不是跳過的情況下才播放鈴聲和顯示通知
+
+  // 播放鈴聲
+  const audio = new Audio()
+  audio.src = settings.selectedAlarm.file
+  audio.volume = settings.volume || 1
+  audio.play()
+
+  // 通知邏輯：只有工作時間完成才顯示通知，休息時間完成不顯示
+  if (settings.notifications && !wasBreak && currentTaskName) {
+    const { show, isSupported } = useWebNotification({
+      title: '任務完成',
+      body: `已完成：${currentTaskName}`,
+      icon: new URL('@/assets/tomato.png', import.meta.url).href,
+    })
+    // 顯示通知
+    if (isSupported.value) {
+      show()
     }
   }
 
@@ -254,11 +257,16 @@ const timeLeftText = computed(() => {
 })
 
 const pendingTasks = computed(() => {
-  // 如果有當前任務，則排除第一個任務（因為當前任務是從 items[0] 取得的）
-  // 如果沒有當前任務，則顯示所有任務
-  if (tasks.currentTask && tasks.items.length > 0) {
+  // 如果是休息時間，顯示所有任務（因為還沒有開始執行任何任務）
+  if (tasks.isBreak) {
+    return tasks.items
+  }
+
+  // 如果有當前任務且不是休息時間，則排除第一個任務（因為當前任務是從 items[0] 取得的）
+  if (tasks.currentTask && tasks.items.length > 0 && !tasks.isBreak) {
     return tasks.items.slice(1) // 排除第一個任務
   }
+
   return tasks.items
 })
 
@@ -271,6 +279,43 @@ const progressValue = computed(() => {
   // 進度條為已過百分比
   return ((total - tasks.timeleft) / total) * 100
 })
+
+const skipToNext = () => {
+  // 停止計時器
+  clearInterval(timer)
+  // 狀態變成停止
+  status.value = STATUS.STOP
+
+  // 將當前任務移動到未完成列表的最後
+  tasks.moveCurrentTaskToEnd()
+
+  // 如果還有任務，重新開始計時器
+  if (tasks.items.length > 0) {
+    startTimer()
+  }
+}
+
+// 監控是否需要停止計時器
+watch(
+  () => tasks.shouldStopTimer,
+  (shouldStop) => {
+    if (shouldStop) {
+      console.log('接收到停止計時器的信號')
+      // 停止計時器
+      clearInterval(timer)
+      // 狀態變成停止
+      status.value = STATUS.STOP
+      // 重置標誌
+      tasks.shouldStopTimer = false
+
+      // 如果還有任務且處於休息狀態，自動開始休息計時器
+      if (tasks.isBreak) {
+        console.log('自動開始休息計時器')
+        startTimer()
+      }
+    }
+  }
+)
 </script>
 
 <style scoped lang="scss">

@@ -20,6 +20,7 @@ export const useTasksStore = defineStore(
     const breakTime = computed(() => settings.breakMinutes * 60)
 
     const timeleft = ref(workTime.value)
+    const shouldStopTimer = ref(false) // 用於通知首頁停止計時器
 
     // 清理重複ID並重新分配
     const cleanupDuplicateIds = () => {
@@ -111,18 +112,57 @@ export const useTasksStore = defineStore(
     const deleteTask = (task) => {
       const index = items.value.findIndex((t) => t.id === task.id)
       if (index !== -1) {
+        // 檢查刪除的是否為當前正在進行的任務（第一個任務）
+        const isCurrentTask = index === 0 && !isBreak.value && currentTask.value === task.text
+
         items.value.splice(index, 1)
+
+        // 如果刪除的是當前任務，需要更新狀態
+        if (isCurrentTask) {
+          console.log('刪除了當前正在進行的任務:', task.text)
+          // 通知首頁停止計時器
+          shouldStopTimer.value = true
+
+          // 清空當前任務
+          currentTask.value = ''
+          // 重置為工作時間
+          timeleft.value = workTime.value
+        }
       }
     }
 
     const completeTask = (task) => {
       const index = items.value.findIndex((t) => t.id === task.id)
       if (index !== -1) {
+        // 檢查完成的是否為當前正在進行的任務（第一個任務）
+        const isCurrentTask = index === 0 && !isBreak.value && currentTask.value === task.text
+
         finishedTasks.value.push({
           id: task.id,
           text: task.text,
         })
         items.value.splice(index, 1)
+
+        // 如果完成的是當前任務，需要更新狀態
+        if (isCurrentTask) {
+          console.log('完成了當前正在進行的任務:', task.text)
+          // 通知首頁停止計時器
+          shouldStopTimer.value = true
+
+          // 清空當前任務
+          currentTask.value = ''
+
+          // 如果還有更多任務，進入休息時間；否則結束
+          if (items.value.length > 0) {
+            isBreak.value = true
+            timeleft.value = breakTime.value
+            console.log('進入休息時間')
+          } else {
+            // 沒有更多任務，重置為工作時間
+            timeleft.value = workTime.value
+            console.log('所有任務完成')
+          }
+        }
       }
     }
 
@@ -140,22 +180,36 @@ export const useTasksStore = defineStore(
 
     const setFinishedItem = () => {
       if (!isBreak.value && currentTask.value) {
+        // 工作時間完成：將任務標記為完成
         finishedTasks.value.push({
           id: getNextId(),
           text: currentTask.value,
         })
+        // 從待辦列表中移除已完成的任務
         if (items.value.length > 0) {
           items.value.shift()
         }
+
+        // 清空當前任務顯示
+        currentTask.value = ''
+
+        // 如果還有更多任務，進入休息時間；否則結束
+        if (items.value.length > 0) {
+          isBreak.value = true
+          timeleft.value = breakTime.value
+          console.log('工作完成，進入休息時間')
+        } else {
+          // 沒有更多任務，保持工作狀態但清空任務
+          timeleft.value = workTime.value
+          console.log('所有任務完成')
+        }
+      } else if (isBreak.value) {
+        // 休息時間完成：結束休息，準備下一個工作任務
+        isBreak.value = false
+        timeleft.value = workTime.value
+        currentTask.value = ''
+        console.log('休息結束，準備下一個任務')
       }
-
-      currentTask.value = ''
-
-      if (items.value.length > 0) {
-        isBreak.value = !isBreak.value
-      }
-
-      timeleft.value = isBreak.value ? breakTime.value : workTime.value
     }
 
     const delFinishedItem = (id) => {
@@ -176,6 +230,40 @@ export const useTasksStore = defineStore(
           model: task.text,
         })
         finishedTasks.value.splice(i, 1)
+      }
+    }
+
+    // 將當前任務移動到未完成事項的最後一個位置
+    const moveCurrentTaskToEnd = () => {
+      // 如果是休息時間，直接跳過休息，不移動任何任務
+      if (isBreak.value) {
+        console.log('跳過休息時間')
+        // 切換到工作狀態
+        isBreak.value = false
+        // 重置為工作時間
+        timeleft.value = workTime.value
+        // 清空當前任務顯示
+        currentTask.value = ''
+        return
+      }
+
+      // 工作時間的邏輯：移動當前任務到最後
+      if (items.value.length > 0) {
+        // 取得第一個任務（當前任務）
+        const currentTaskItem = items.value.shift()
+        // 將其添加到列表最後
+        items.value.push(currentTaskItem)
+
+        // 清空當前任務顯示
+        currentTask.value = ''
+
+        // 重置時間（保持工作狀態）
+        timeleft.value = workTime.value
+
+        console.log(
+          '當前任務已移至最後，新的任務列表:',
+          items.value.map((t) => t.text)
+        )
       }
     }
 
@@ -217,6 +305,7 @@ export const useTasksStore = defineStore(
       workTime,
       breakTime,
       nextId,
+      shouldStopTimer,
       addTask,
       editTask,
       submitEdit,
@@ -231,6 +320,7 @@ export const useTasksStore = defineStore(
       initializeIds,
       resetAllData,
       cleanupDuplicateIds,
+      moveCurrentTaskToEnd,
     }
   },
   {
